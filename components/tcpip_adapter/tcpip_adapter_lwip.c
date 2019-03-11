@@ -151,10 +151,10 @@ static int tcpip_adapter_ipc_check(tcpip_adapter_api_msg_t *msg)
 
 static esp_err_t tcpip_adapter_update_default_netif(void)
 {
-    if (netif_is_up(esp_netif[TCPIP_ADAPTER_IF_STA])) {
-        netif_set_default(esp_netif[TCPIP_ADAPTER_IF_STA]);
-    } else if (netif_is_up(esp_netif[TCPIP_ADAPTER_IF_ETH])) {
+    if (netif_is_up(esp_netif[TCPIP_ADAPTER_IF_ETH])) {
         netif_set_default(esp_netif[TCPIP_ADAPTER_IF_ETH]);
+    } else if (netif_is_up(esp_netif[TCPIP_ADAPTER_IF_STA])) {
+        netif_set_default(esp_netif[TCPIP_ADAPTER_IF_STA]);
     } else if (netif_is_up(esp_netif[TCPIP_ADAPTER_IF_AP])) {
         netif_set_default(esp_netif[TCPIP_ADAPTER_IF_AP]);
     }
@@ -1217,6 +1217,15 @@ esp_err_t tcpip_adapter_get_netif(tcpip_adapter_if_t tcpip_if, void ** netif)
         return ESP_ERR_TCPIP_ADAPTER_IF_NOT_READY;
     }
     return ESP_OK;
+}
+
+bool tcpip_adapter_is_netif_up(tcpip_adapter_if_t tcpip_if)
+{
+    if (esp_netif[tcpip_if] != NULL && netif_is_up(esp_netif[tcpip_if])) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 #endif /* CONFIG_TCPIP_LWIP */
